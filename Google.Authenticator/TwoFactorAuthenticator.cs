@@ -68,15 +68,10 @@ namespace Google.Authenticator
             string qrCodeUrl = string.Empty;
             if (generateQrCode)
             {
-                using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
-                using (QRCodeData qrCodeData = qrGenerator.CreateQrCode(provisionUrl, QRCodeGenerator.ECCLevel.Q))
-                using (QRCode qrCode = new QRCode(qrCodeData))
-                using (Bitmap qrCodeImage = qrCode.GetGraphic(QRPixelsPerModule))
-                using (MemoryStream ms = new MemoryStream())
+                using (QRCodeData qrCodeData = QRCodeGenerator.CreateQrCode(provisionUrl, QRCodeGenerator.ECCLevel.Q))
+                using (PngByteQRCode qrCode = new PngByteQRCode(qrCodeData))
                 {
-                    qrCodeImage.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-
-                    qrCodeUrl = String.Format("data:image/png;base64,{0}", Convert.ToBase64String(ms.ToArray()));
+                    qrCodeUrl = $"data:image/png;base64,{Convert.ToBase64String(qrCode.GetGraphic(QRPixelsPerModule))}";
                 }
             }
 
